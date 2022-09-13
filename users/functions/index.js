@@ -3,7 +3,7 @@ const Warrant = require("@warrantdev/warrant-node");
 
 exports.createWarrantUser = functions.auth.user().onCreate((user) => {
   const warrantClient = new Warrant.Client({
-    apiKey: "api_test_sFKH7-x-7lwtXeHwX_OkvhArmBdD4iKBDFwZftbUd74=",
+    apiKey: "YOUR_API_KEY",
   });
 
   warrantClient
@@ -14,7 +14,7 @@ exports.createWarrantUser = functions.auth.user().onCreate((user) => {
 
 exports.deleteWarrantUser = functions.auth.user().onDelete((user) => {
   const warrantClient = new Warrant.Client({
-    apiKey: "api_test_sFKH7-x-7lwtXeHwX_OkvhArmBdD4iKBDFwZftbUd74=",
+    apiKey: "YOUR_API_KEY",
   });
 
   warrantClient
