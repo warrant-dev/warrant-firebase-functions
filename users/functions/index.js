@@ -21,3 +21,22 @@ exports.deleteWarrantUser = functions.auth.user().onDelete((user) => {
       .deleteUser(user.uid)
       .catch((error) => console.log(error));
 });
+
+exports.setUserClaims = functions.auth.user().beforeSignIn(async (user, _) => {
+  const warrantClient = new Warrant.Client({
+    apiKey: "YOUR_API_KEY",
+  });
+
+  let roles = await warrantClient.listRolesForUser(user.uid);
+  roles = roles.map((role) => role.roleId);
+  user.customClaims["roles"] = roles;
+
+  let permissions = await warrantClient.listPermissionsForUser(user.uid);
+  permissions = permissions.map((permission) => permission.permissionId);
+  user.customClaims["permissions"] = permissions;
+
+  return {
+    customClaims: user.customClaims,
+    sessionClaims: user.customClaims,
+  };
+});
