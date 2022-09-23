@@ -1,6 +1,8 @@
 const functions = require("firebase-functions");
 const Warrant = require("@warrantdev/warrant-node");
 
+const WARRANT_NAMESPACE = "http://warrant.dev";
+
 exports.createWarrantUser = functions.auth.user().onCreate((user) => {
   const warrantClient = new Warrant.Client({
     apiKey: "YOUR_API_KEY",
@@ -28,25 +30,25 @@ exports.setUserClaims = functions.auth.user().beforeSignIn(async (user, _) => {
   });
 
   if (user.customClaims) {
-    if (!user.customClaims["http://warrant.dev"]) {
-      user.customClaims["http://warrant.dev"] = {};
+    if (!user.customClaims[WARRANT_NAMESPACE]) {
+      user.customClaims[WARRANT_NAMESPACE] = {};
     }
   } else {
-    user.customClaims = {"http://warrant.dev": {}};
+    user.customClaims = {[WARRANT_NAMESPACE]: {}};
   }
 
   let roles = await warrantClient.listRolesForUser(user.uid);
   roles = roles.map((role) => role.roleId);
-  user.customClaims["http://warrant.dev"]["roles"] = roles;
+  user.customClaims[WARRANT_NAMESPACE]["roles"] = roles;
 
   let permissions = await warrantClient.listPermissionsForUser(user.uid);
   permissions = permissions.map((permission) => permission.permissionId);
-  user.customClaims["http://warrant.dev"]["permissions"] = permissions;
+  user.customClaims[WARRANT_NAMESPACE]["permissions"] = permissions;
 
   const sessionToken = await warrantClient.createAuthorizationSession({
     userId: user.uid,
   });
-  user.customClaims["http://warrant.dev"]["sessionToken"] = sessionToken;
+  user.customClaims[WARRANT_NAMESPACE]["sessionToken"] = sessionToken;
 
   return {
     customClaims: user.customClaims,
