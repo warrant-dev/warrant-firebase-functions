@@ -24,7 +24,8 @@ exports.deleteWarrantUser = functions.auth.user().onDelete((user) => {
       .catch((error) => console.log(error));
 });
 
-// Use this instead of `onCreate` when you want to set claims on sign in
+// Use this in conjunction with `setUserClaims` when you want to set claims on sign in
+// If you don't want to set claims on sign in, you may use the function above with the `onCreate` trigger
 exports.createWarrantUser = functions.auth.user().beforeCreate((user, _) => {
   const warrantClient = new Warrant.Client({
     apiKey: "YOUR_API_KEY",
